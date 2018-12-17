@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <View android:layout_width="match_parent"
+        android:background="#fff"
+        android:visibility="gone"
+        android:layout_height="20dp"/>
+
+    <RelativeLayout
+        android:id="@+id/common_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#fff"
+        app:contentInsetStart="0dp">
+
+
+        <RelativeLayout
+            android:id="@+id/common_toolbar_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+              >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30px"
+                android:layout_marginRight="30px"
+                android:src="@mipmap/ic_title_back" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/common_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:maxLength="10"
+            android:singleLine="true"
+            android:text="联系人"
+            android:textColor="#333"
+             android:textSize="16dp" />
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_permission"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:layout_marginLeft="50dp"
+    android:layout_marginRight="50dp"
+    android:paddingLeft="28dp"
+    android:paddingRight="28dp">
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textSize="15dp"
+        android:textColor="#333"
+        android:layout_width="wrap_content"
+        android:text="提示"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp" />
+
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:textSize="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:text="请申请权限"
+        android:lineSpacingExtra="5dp"
+        android:textColor="#333"
+
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp" />
+
+
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:weightSum="2"
+
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_left"
+            android:textSize="11dp"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
+            android:text="取消"
+            android:background="@drawable/shape_btn_bg" />
+        <Button
+            android:id="@+id/btn_right"
+            android:textSize="11dp"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="30dp"
+            android:layout_height="30dp"
+            android:text="确定"
+            android:background="@drawable/shape_btn_bg" />
+    </LinearLayout>
+
+</LinearLayout>

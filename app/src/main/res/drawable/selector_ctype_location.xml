@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@mipmap/ic_ctype_loaction_pre" android:state_pressed="true"></item>
+    <item android:drawable="@mipmap/ic_ctype_location" android:state_pressed="false"></item>
+    <item android:drawable="@mipmap/ic_ctype_location"></item>
+</selector>
