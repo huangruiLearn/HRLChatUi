@@ -80,6 +80,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/shape_session_btn_voice"
                     android:text="按住说话"
+                    android:textSize="13dp"
                     android:visibility="gone" />
 
 
@@ -102,10 +103,12 @@
 
             <com.hrl.chaui.widget.StateButton
                 android:id="@+id/btn_send"
-                android:layout_width="40dp"
+                android:layout_width="50dp"
                 android:layout_height="30dp"
                 android:padding="1dp"
+                android:layout_marginRight="10dp"
                 android:text="发送"
+                android:textSize="13dp"
                 android:textColor="@color/white"
                 android:visibility="gone"
                 app:normalBackgroundColor="#127CD6"

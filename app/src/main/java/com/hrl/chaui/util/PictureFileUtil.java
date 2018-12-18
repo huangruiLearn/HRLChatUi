@@ -21,7 +21,7 @@ public class PictureFileUtil {
      * 从相册选择图片
       * @param mContext     上下文信息
        */
-    public static void openGalleryPic(Activity mContext) {
+    public static void openGalleryPic(Activity mContext,int requstcode) {
         // 进入相册 不需要的api可以不写
         PictureSelector.create(mContext)
                 .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
@@ -66,13 +66,13 @@ public class PictureFileUtil {
                 //.videoQuality()// 视频录制质量 0 or 1
                 //.videoSecond()//显示多少秒以内的视频or音频也可适用
                 //.recordVideoSecond()//录制视频秒数 默认60s
-                .forResult(PictureConfig.TYPE_IMAGE);//结果回调onActivityResult code
+                .forResult(requstcode);//结果回调onActivityResult code
     }
 
 
 
 
-    public static void openGalleryAudio(Activity mContext  ) {
+    public static void openGalleryAudio(Activity mContext ,int requstcode ) {
         // 进入相册 不需要的api可以不写
         PictureSelector.create(mContext)
                 .openGallery(PictureMimeType.ofVideo())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
@@ -116,7 +116,7 @@ public class PictureFileUtil {
                 //.videoQuality()// 视频录制质量 0 or 1
                 //.videoSecond()//显示多少秒以内的视频or音频也可适用
                 //.recordVideoSecond()//录制视频秒数 默认60s
-                .forResult(PictureConfig.TYPE_VIDEO);//结果回调onActivityResult code
+                .forResult(requstcode);//结果回调onActivityResult code
     }
 
 

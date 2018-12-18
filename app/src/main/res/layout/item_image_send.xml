@@ -31,7 +31,7 @@
              android:scaleType="centerInside"
             android:layout_marginLeft="5dp"
 
-            android:src="@mipmap/ic_head_default" />
+            android:src="@mipmap/ic_head_default_right" />
 
 
         <RelativeLayout
@@ -44,7 +44,7 @@
             android:orientation="horizontal">
 
 
-            <com.ctsig.mpush.widget.BubbleImageView
+            <com.hrl.chaui.widget.BubbleImageView
                 android:id="@+id/bivPic"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -52,8 +52,7 @@
                 android:layout_marginStart="0dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/default_img_failed"
-                android:transitionName="sharedView"
+                 android:transitionName="sharedView"
                 app:angle="6dp"
                 app:arrowHeight="8dp"
                 app:arrowLocation="right"

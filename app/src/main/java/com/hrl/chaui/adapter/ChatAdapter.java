@@ -1,6 +1,7 @@
 package com.hrl.chaui.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -99,9 +100,28 @@ public class ChatAdapter extends BaseQuickAdapter<Message,BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, Message item) {
 
+
         setContent(helper, item);
         setStatus(helper, item);
+        MsgBody msgContent = item.getBody();
+        if (msgContent instanceof AudioMsgBody){
+            helper.addOnClickListener(R.id.rlAudio);
+        //    helper.getView(R.id.ivAudio).setId(helper.getAdapterPosition());
+           /* if (helper.getAdapterPosition() == -1) {
+                helper.getView(R.id.ivAudio)
+                        .setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                helper.getView(R.id.ivAudio)
+                        .setBackgroundResource(R.drawable.audio_animation_right_list);
+                AnimationDrawable  drawable = (AnimationDrawable)helper.getView(R.id.ivAudio)
+                        .getBackground();
+                drawable.start();
+            } else {
+                helper.getView(R.id.ivAudio)
+                        .setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+            }*/
 
+
+        }
 
 
 
@@ -191,23 +211,10 @@ public class ChatAdapter extends BaseQuickAdapter<Message,BaseViewHolder> {
         }else if(item.getMsgType().equals(MsgType.FILE)){
             FileMsgBody msgBody = (FileMsgBody) item.getBody();
             helper.setText(R.id.msg_tv_file_name, msgBody.getDisplayName() );
-            helper.setText(R.id.msg_tv_file_size, msgBody.getSize()+"" );
-           /* VideoMsgBody msgBody = (VideoMsgBody) item.getBody();
-            if (fileMessage.getLocalPath() != null && new File(fileMessage.getLocalPath().getPath()).exists()) {
-                VideoThumbLoader.getInstance().showThumb(fileMessage.getLocalPath().getPath(), bivPic, 200, 200);
-            } else {
-                bivPic.setImageResource(R.mipmap.img_video_default);
-            }*/
+            helper.setText(R.id.msg_tv_file_size, msgBody.getSize()+"B" );
         }else if(item.getMsgType().equals(MsgType.AUDIO)){
             AudioMsgBody msgBody = (AudioMsgBody) item.getBody();
-            helper.setText(R.id.tvDuration, msgBody.getDuration()+"" );
-
-           /* VideoMsgBody msgBody = (VideoMsgBody) item.getBody();
-            if (fileMessage.getLocalPath() != null && new File(fileMessage.getLocalPath().getPath()).exists()) {
-                VideoThumbLoader.getInstance().showThumb(fileMessage.getLocalPath().getPath(), bivPic, 200, 200);
-            } else {
-                bivPic.setImageResource(R.mipmap.img_video_default);
-            }*/
+            helper.setText(R.id.tvDuration, msgBody.getDuration()+"\"" );
         }
     }
 }

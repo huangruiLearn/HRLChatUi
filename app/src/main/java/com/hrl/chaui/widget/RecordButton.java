@@ -1,9 +1,12 @@
 package com.hrl.chaui.widget;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -20,11 +23,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hrl.chaui.MyApplication;
+import com.hrl.chaui.activity.ChatActivity;
+import com.hrl.chaui.activity.SplashActivity;
 import com.hrl.chaui.util.LogUtil;
 import com.hrl.chaui.R;
+import com.hrl.chaui.util.PermissionUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.IOException;
+
+import io.reactivex.functions.Consumer;
 
 public class RecordButton extends android.support.v7.widget.AppCompatButton {
 
@@ -113,6 +123,12 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+
+
+
+
+
         int action = event.getAction();
         y = event.getY();
         LogUtil.d("y的值："+y);
@@ -139,6 +155,8 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
                // anim.start();
                 break;
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+
                 this.setText("按住录音");
                 startTimer.cancel(); // 主动松开时取消计时
                 recordTimer.cancel(); // 主动松开时取消计时
@@ -150,9 +168,10 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
                     cancelRecord();
                 }
                 break;
-            case MotionEvent.ACTION_CANCEL: // 异常
+       /*     case MotionEvent.ACTION_CANCEL: // 异常
+                LogUtil.d("滑动取消");
                 cancelRecord();
-                break;
+                break;*/
         }
 
         return true;
@@ -191,6 +210,7 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
     private void finishRecord() {
         long intervalTime = System.currentTimeMillis() - startTime;
         if (intervalTime < MIN_INTERVAL_TIME) {
+            LogUtil.d("录音时间太短");
             volumeHandler.sendEmptyMessageDelayed(-100, 500);
              //view.setBackgroundResource(R.drawable.ic_voice_cancel);
             mStateIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_wraning));
@@ -198,6 +218,8 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
             anim.stop();
             File file = new File(mFile);
             file.delete();
+        /*    stopRecording();
+            recordDialog.dismiss();*/
             return;
         }else{
             LogUtil.d("取消录音111");

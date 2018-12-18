@@ -34,6 +34,6 @@
              android:layout_marginRight="10dp"
             android:layout_marginTop="15dp"
               android:textColor="@android:color/white"
-             android:textSize="15sp" />
+             android:textSize="14dp" />
     </LinearLayout>
 </FrameLayout>

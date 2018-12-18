@@ -4,13 +4,13 @@
     >
     <item
         android:drawable="@mipmap/audio_animation_list_right_3"
-        android:duration="300"></item>
+        android:duration="200"></item>
     <item
         android:drawable="@mipmap/audio_animation_list_right_1"
-        android:duration="300"></item>
+        android:duration="200"></item>
     <item
         android:drawable="@mipmap/audio_animation_list_right_2"
-        android:duration="300"></item>
+        android:duration="200"></item>
 
 
 </animation-list>

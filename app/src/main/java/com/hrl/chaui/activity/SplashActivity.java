@@ -3,6 +3,7 @@ package com.hrl.chaui.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -19,8 +20,14 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        requestPermisson();
+        setContentView(R.layout.activity_splash);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                requestPermisson();
+            }
+        }, 100);
+
     }
 
 
@@ -29,6 +36,7 @@ public class SplashActivity extends AppCompatActivity {
         rxPermission
                 .request(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,//存储权限
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.CAMERA,
                         Manifest.permission.RECORD_AUDIO
                 )
@@ -38,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
                         if (aBoolean) {
                             LogUtil.d("splash----所有权限都被同意");
                             startActivity(new Intent(SplashActivity.this,ChatActivity.class));
-
+                            finish();
                          } else {
                             LogUtil.d("splash----至少一个权限被拒绝");
 

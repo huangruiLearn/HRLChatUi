@@ -30,7 +30,7 @@
             android:layout_alignParentRight="true"
             android:scaleType="centerInside"
 
-             android:src="@mipmap/ic_head_default" />
+             android:src="@mipmap/ic_head_default_right" />
 
 
         <LinearLayout

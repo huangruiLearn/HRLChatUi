@@ -33,7 +33,7 @@
             android:layout_marginRight="5dp"
 
             android:scaleType="centerInside"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_head_default_left" />
 
 
         <LinearLayout
@@ -73,7 +73,7 @@
                         android:gravity="top"
                         android:singleLine="true"
                         android:textColor="#343434"
-                        android:textSize="16sp" />
+                        android:textSize="16dp" />
 
                     <TextView
                         android:id="@+id/msg_tv_file_size"
@@ -84,7 +84,7 @@
                         android:gravity="bottom"
                         android:text="149kb"
                         android:textColor="#a8a8a8"
-                        android:textSize="12sp" />
+                        android:textSize="12dp" />
 
                     <TextView
                         android:id="@+id/rc_msg_canceled"

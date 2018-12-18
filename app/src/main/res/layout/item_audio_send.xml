@@ -30,7 +30,7 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
              android:scaleType="centerInside"
-            android:src="@mipmap/ic_head_default" />
+            android:src="@mipmap/ic_head_default_right" />
 
 
         <LinearLayout
@@ -58,11 +58,11 @@
                     android:background="@drawable/message_text_send">
 
                     <ImageView
-                        android:id="@+id/ivAudio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:background="@drawable/audio_animation_right_list"/>
+                         android:id="@+id/ivAudio"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_alignParentRight="true"
+                         android:background="@mipmap/audio_animation_list_right_3"/>
 
                 </RelativeLayout>
 

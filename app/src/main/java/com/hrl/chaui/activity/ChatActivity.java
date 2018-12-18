@@ -1,9 +1,13 @@
 package com.hrl.chaui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -19,7 +23,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hrl.chaui.adapter.ChatAdapter;
+import com.hrl.chaui.bean.MsgType;
+import com.hrl.chaui.util.AudioPlayManager;
+import com.hrl.chaui.util.IAudioPlayListener;
 import com.hrl.chaui.util.LogUtil;
 import com.hrl.chaui.bean.Message;
 import com.hrl.chaui.R;
@@ -32,6 +41,7 @@ import com.hrl.chaui.bean.VideoMsgBody;
 import com.hrl.chaui.util.ChatUiHelper;
 import com.hrl.chaui.util.FileUtils;
 import com.hrl.chaui.util.PictureFileUtil;
+import com.hrl.chaui.widget.MediaManager;
 import com.hrl.chaui.widget.RecordButton;
 import com.hrl.chaui.widget.StateButton;
 import com.luck.picture.lib.PictureSelector;
@@ -45,6 +55,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,16 +87,14 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
     LinearLayout mLlEmotion;//表情布局
     @BindView(R.id.llAdd)
     LinearLayout mLlAdd;//添加布局
-
-
-
-
-
-    @BindView(R.id.swipe_chat)
-    SwipeRefreshLayout mSwipeLayout;
-    private ChatAdapter mAdapter;
-     public static String 	mSenderId="right";
-    private static String     mTargetId="left";
+     @BindView(R.id.swipe_chat)
+     SwipeRefreshLayout mSwipeRefresh;//下拉刷新
+     private ChatAdapter mAdapter;
+     public static final String 	  mSenderId="right";
+     public static final String     mTargetId="left";
+     public static final int       REQUEST_CODE_IMAGE=0000;
+     public static final int       REQUEST_CODE_VEDIO=1111;
+     public static final int       REQUEST_CODE_FILE=2222;
 
 
     @Override
@@ -95,15 +104,136 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         initContent();
     }
 
-     protected void initContent() {
-        ButterKnife.bind(this) ;
 
+    private ImageView animView;
+    private int res=0;
+    int animationRes = 0;
+    private boolean isPlaying=false;
+    private    ImageView  ivAudio;
+
+    protected void initContent() {
+        ButterKnife.bind(this) ;
         mAdapter=new ChatAdapter(this, new ArrayList<Message>());
         LinearLayoutManager mLinearLayout=new LinearLayoutManager(this);
         mRvChat.setLayoutManager(mLinearLayout);
         mRvChat.setAdapter(mAdapter);
-        mSwipeLayout.setOnRefreshListener(this);
+         mSwipeRefresh.setOnRefreshListener(this);
         initChatUi();
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                if (ivAudio != null) {
+                    ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                    ivAudio = null;
+                    MediaManager.reset();
+                }else{
+                    ivAudio = view.findViewById(R.id.ivAudio);
+
+                 //   ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                    MediaManager.reset();
+                    // voicePlayPosition = ivAudio.getId();
+                    ivAudio.setBackgroundResource(R.drawable.audio_animation_right_list);
+                    AnimationDrawable  drawable = (AnimationDrawable) ivAudio.getBackground();
+                    drawable.start();
+                    MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAdapter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            LogUtil.d("开始播放结束");
+                            ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                            MediaManager.release();
+                         }
+                    });
+
+
+                    // voicePlayPosition = ivAudio.getId();
+
+                }
+
+
+             /*   if (isPlaying) {
+                    isPlaying=true;
+                    LogUtil.d("开始播放");
+
+                    ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                    MediaManager.pause();
+
+                   // voicePlayPosition = ivAudio.getId();
+                    ivAudio.setBackgroundResource(R.drawable.audio_animation_right_list);
+                    AnimationDrawable  drawable = (AnimationDrawable) ivAudio.getBackground();
+                    drawable.start();
+                    MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAda    pter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            LogUtil.d("开始播放结束");
+                            ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                            MediaManager.pause();
+                       //     voicePlayPosition = -1;
+                            isPlaying=false;
+                        }
+                    });
+
+                }else{
+                    LogUtil.d("开始停止播放");
+                    final ImageView ivAudio = view.findViewById(R.id.ivAudio);
+                    ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                    MediaManager.pause();
+                //    voicePlayPosition = -1;
+                }*/
+
+
+            /*    if (animView != null) {
+                    animView.setImageResource(res);
+                    animView = null;
+                }
+                *//*switch (messageInfos.get(position).getType()) {
+                    case 1:
+                        animationRes = R.drawable.voice_left;
+                        res = R.mipmap.icon_voice_left3;
+                        break;
+                    case 2:
+                        animationRes = R.drawable.voice_right;
+                        res = R.mipmap.icon_voice_right3;
+                        break;
+                }*//*
+                animationRes = R.drawable.audio_animation_right_list;
+                res = R.mipmap.audio_animation_list_right_3;
+                ImageView imageView=view.findViewById(R.id.ivAudio);
+                imageView.setBackgroundResource(animationRes);
+
+                animView = imageView;
+
+
+
+
+
+
+                AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getBackground();
+                animationDrawable.start();
+                MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAdapter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        LogUtil.d("开始播放结束");
+                        animView.setImageResource(res);
+
+                    }
+                });*/
+
+
+                /*MediaManager.playSound(messageInfos.get(position).getFilepath(), new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        animView.setImageResource(res);
+                    }
+                });*/
+
+
+
+
+
+
+
+            }
+        });
 
      }
 
@@ -113,23 +243,29 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
 
 
 
-    private void updateMsgStatus(Message message) {
-        for (int i = 0; i < mAdapter.getData().size(); i++) {
-            Message msg = mAdapter.getData().get(i);
-            if (msg.getUuid().equals(message.getUuid())) {
-                mAdapter.setData(i,message);
-                mAdapter.notifyItemChanged(i);
-                break;
-            }
-        }
-    }
 
 
     @Override
     public void onRefresh() {
-
-
-
+          List<Message>  mReceiveMsgList=new ArrayList<Message>();
+          Message mMessgaeText=getBaseReceiveMessage(MsgType.TEXT);
+          TextMsgBody mTextMsgBody=new TextMsgBody();
+          mTextMsgBody.setMessage("收到的消息");
+          mMessgaeText.setBody(mTextMsgBody);
+          mReceiveMsgList.add(mMessgaeText);
+          Message mMessgaeImage=getBaseReceiveMessage(MsgType.IMAGE);
+          ImageMsgBody mImageMsgBody=new ImageMsgBody();
+          mImageMsgBody.setThumbUrl("http://pic19.nipic.com/20120323/9248108_173720311160_2.jpg");
+          mMessgaeImage.setBody(mImageMsgBody);
+          mReceiveMsgList.add(mMessgaeImage);
+          Message mMessgaeFile=getBaseReceiveMessage(MsgType.FILE);
+          FileMsgBody mFileMsgBody=new FileMsgBody();
+          mFileMsgBody.setDisplayName("收到的文件");
+          mFileMsgBody.setSize(12);
+          mMessgaeFile.setBody(mFileMsgBody);
+          mReceiveMsgList.add(mMessgaeFile);
+          mAdapter.addData(0,mReceiveMsgList);
+          mSwipeRefresh.setRefreshing(false);
     }
 
 
@@ -180,14 +316,14 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         ((RecordButton) mBtnAudio).setOnFinishedRecordListener(new RecordButton.OnFinishedRecordListener() {
             @Override
             public void onFinishedRecord(String audioPath, int time) {
-                File file = new File(audioPath);
+                LogUtil.d("录音回调成功111");
+                 File file = new File(audioPath);
                  if (file.exists()) {
+                     LogUtil.d("录音回调成功222");
                     sendAudioMessage(audioPath,time);
                 }
             }
         });
-
-
 
     }
 
@@ -195,41 +331,25 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_send:
-                LogUtil.d("发送消息");
-               sendTextMsg(mEtContent.getText().toString());
+                sendTextMsg(mEtContent.getText().toString());
+                mEtContent.setText("");
                 break;
             case R.id.rlPhoto:
-                PictureFileUtil.openGalleryPic(ChatActivity.this);
+                PictureFileUtil.openGalleryPic(ChatActivity.this,REQUEST_CODE_IMAGE);
                 break;
             case R.id.rlVideo:
-                PictureFileUtil.openGalleryAudio(ChatActivity.this);
+                PictureFileUtil.openGalleryAudio(ChatActivity.this,REQUEST_CODE_VEDIO);
                 break;
             case R.id.rlLocation:
 
                 break;
             case R.id.rlFile:
-                PictureFileUtil.openFile(ChatActivity.this,1110);
+                PictureFileUtil.openFile(ChatActivity.this,REQUEST_CODE_FILE);
                 break;
         }
     }
 
 
-
- /*   //收到消息监听
-    @Subscriber(tag = Constant.EB_MSG_RECEIVE, mode= ThreadMode.MAIN)
-    public void getEventMessage(Message message) {
-        LogUtils.d("ConMsgFragment收到消息,更新底部未读数量");
-        // refresh();
-        if (!UserDbUtil.getId().equals(message.getTargetId()))
-            return;
-        LogUtil.d("收到消息后更新列表:"+message);
-        mAdapter.addData(message);
-        mRvChat.scrollToPosition(mAdapter.getItemCount() - 1);
-        //更新会话信息
-        ConversationDbUtil.updateConversationLastMsg(message);
-
-
-    }*/
 
 
 
@@ -238,20 +358,20 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case 1110:
+                case REQUEST_CODE_FILE:
                     String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
                     LogUtil.d("获取到的文件路径:"+filePath);
                     sendFileMessage(mSenderId, mTargetId, filePath);
                     break;
-                case PictureConfig.TYPE_IMAGE:
+                case REQUEST_CODE_IMAGE:
                     // 图片选择结果回调
                     List<LocalMedia> selectListPic = PictureSelector.obtainMultipleResult(data);
                     for (LocalMedia media : selectListPic) {
-                        LogUtil.d("获取图片或者视频路径成功:"+  media.getPath());
+                        LogUtil.d("获取图片路径成功:"+  media.getPath());
                         sendImageMessage(media);
                     }
                     break;
-                case PictureConfig.TYPE_VIDEO:
+                case REQUEST_CODE_VEDIO:
                     // 视频选择结果回调
                     List<LocalMedia> selectListVideo = PictureSelector.obtainMultipleResult(data);
                     for (LocalMedia media : selectListVideo) {
@@ -265,68 +385,37 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
 
 
 
+
+    //文本消息
     private void sendTextMsg(String hello)  {
-        //文本消息
-        final Message mMessgae=new Message();
-        mMessgae.setSenderId(mSenderId);
-        mMessgae.setTargetId(mTargetId);
-        mMessgae.setSentTime(System.currentTimeMillis());
-        mMessgae.setSentStatus(MsgSendStatus.SENDING);
+        final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
         TextMsgBody mTextMsgBody=new TextMsgBody();
         mTextMsgBody.setMessage(hello);
         mMessgae.setBody(mTextMsgBody);
         //开始发送
         mAdapter.addData( mMessgae);
-        rvMoveToBottom();
-        //2秒后发送成功
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                mMessgae.setSentStatus(MsgSendStatus.SENT);
-                mAdapter.notifyDataSetChanged();
-            }
-        }, 2000);
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
     }
 
 
-    private void sendImageMessage( final LocalMedia media) {
-        //图片消息
-        final Message mMessgae=new Message();
-        mMessgae.setSenderId(mSenderId);
-        mMessgae.setTargetId(mTargetId);
-        mMessgae.setSentTime(System.currentTimeMillis());
-        mMessgae.setSentStatus(MsgSendStatus.SENDING);
+
+    //图片消息
+    private void sendImageMessage(final LocalMedia media) {
+        final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
         ImageMsgBody mImageMsgBody=new ImageMsgBody();
         mImageMsgBody.setThumbUrl(media.getCompressPath());
         mMessgae.setBody(mImageMsgBody);
         //开始发送
         mAdapter.addData( mMessgae);
-        rvMoveToBottom();
-        //2秒后发送成功
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                mMessgae.setSentStatus(MsgSendStatus.SENT);
-                mAdapter.notifyDataSetChanged();
-            }
-        }, 2000);
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
     }
 
 
-
+    //视频消息
     private void sendVedioMessage(final LocalMedia media) {
-
-
-
-
-
-
-
-        //视频消息
-        final Message mMessgae=new Message();
-        mMessgae.setSenderId(mSenderId);
-        mMessgae.setTargetId(mTargetId);
-        mMessgae.setSentTime(System.currentTimeMillis());
-        mMessgae.setSentStatus(MsgSendStatus.SENDING);
-
+        final Message mMessgae=getBaseSendMessage(MsgType.VIDEO);
         //生成缩略图路径
         String vedioPath=media.getPath();
         MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
@@ -344,91 +433,91 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
             out.flush();
             out.close();
         }catch ( Exception e) {
-            LogUtil.d("视频路径获取失败："+e.toString());
+            LogUtil.d("视频缩略图路径获取失败："+e.toString());
             e.printStackTrace();
         }
-
-        LogUtil.d("视频的路径:"+vedioPath);
-        LogUtil.d("视频图片的路径:"+urlpath);
-
         VideoMsgBody mImageMsgBody=new VideoMsgBody();
         mImageMsgBody.setExtra(urlpath);
         mMessgae.setBody(mImageMsgBody);
         //开始发送
         mAdapter.addData( mMessgae);
-        rvMoveToBottom();
-        //2秒后发送成功
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                mMessgae.setSentStatus(MsgSendStatus.SENT);
-                mAdapter.notifyDataSetChanged();
-            }
-        }, 2000);
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
 
     }
 
-
+    //文件消息
     private void sendFileMessage(String from, String to, final String path) {
-        //视频消息
-        final Message mMessgae=new Message();
-        mMessgae.setSenderId(mSenderId);
-        mMessgae.setTargetId(mTargetId);
-        mMessgae.setSentTime(System.currentTimeMillis());
-        mMessgae.setSentStatus(MsgSendStatus.SENDING);
-
+        final Message mMessgae=getBaseSendMessage(MsgType.FILE);
         FileMsgBody mFileMsgBody=new FileMsgBody();
         mFileMsgBody.setLocalPath(path);
-
         mFileMsgBody.setDisplayName(FileUtils.getFileName(path));
         mFileMsgBody.setSize(FileUtils.getFileLength(path));
-       mMessgae.setBody(mFileMsgBody);
+        mMessgae.setBody(mFileMsgBody);
         //开始发送
         mAdapter.addData( mMessgae);
-        rvMoveToBottom();
-        //2秒后发送成功
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                mMessgae.setSentStatus(MsgSendStatus.SENT);
-                mAdapter.notifyDataSetChanged();
-            }
-        }, 2000);
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
 
     }
 
-
+    //语音消息
     private void sendAudioMessage(  final String path,int time) {
-        //视频消息
-        final Message mMessgae=new Message();
-        mMessgae.setSenderId(mSenderId);
-        mMessgae.setTargetId(mTargetId);
-        mMessgae.setSentTime(System.currentTimeMillis());
-        mMessgae.setSentStatus(MsgSendStatus.SENDING);
-
+        final Message mMessgae=getBaseSendMessage(MsgType.AUDIO);
         AudioMsgBody mFileMsgBody=new AudioMsgBody();
         mFileMsgBody.setLocalPath(path);
         mFileMsgBody.setDuration(time);
         mMessgae.setBody(mFileMsgBody);
-
         //开始发送
         mAdapter.addData( mMessgae);
-        rvMoveToBottom();
-        //2秒后发送成功
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
+    }
+
+
+    private Message getBaseSendMessage(MsgType msgType){
+        Message mMessgae=new Message();
+        mMessgae.setUuid(UUID.randomUUID()+"");
+        mMessgae.setSenderId(mSenderId);
+        mMessgae.setTargetId(mTargetId);
+        mMessgae.setSentTime(System.currentTimeMillis());
+        mMessgae.setSentStatus(MsgSendStatus.SENDING);
+        mMessgae.setMsgType(msgType);
+        return mMessgae;
+    }
+
+
+    private Message getBaseReceiveMessage(MsgType msgType){
+        Message mMessgae=new Message();
+        mMessgae.setUuid(UUID.randomUUID()+"");
+        mMessgae.setSenderId(mTargetId);
+        mMessgae.setTargetId(mSenderId);
+        mMessgae.setSentTime(System.currentTimeMillis());
+        mMessgae.setSentStatus(MsgSendStatus.SENDING);
+        mMessgae.setMsgType(msgType);
+        return mMessgae;
+    }
+
+
+    private void updateMsg(final Message mMessgae) {
+        mRvChat.scrollToPosition(mAdapter.getItemCount() - 1);
+         //模拟2秒后发送成功
         new Handler().postDelayed(new Runnable() {
             public void run() {
+                int position=0;
                 mMessgae.setSentStatus(MsgSendStatus.SENT);
-                mAdapter.notifyDataSetChanged();
+                //更新单个子条目
+                for (int i=0;i<mAdapter.getData().size();i++){
+                    Message mAdapterMessage=mAdapter.getData().get(i);
+                    if (mMessgae.getUuid().equals(mAdapterMessage.getUuid())){
+                        position=i;
+                    }
+                }
+                mAdapter.notifyItemChanged(position);
             }
         }, 2000);
+
     }
-
-
-
-    private void  rvMoveToBottom(){
-        mRvChat.scrollToPosition(mAdapter.getItemCount() - 1);
-    }
-
-
-
 
 
 

@@ -32,7 +32,7 @@
              android:layout_marginRight="5dp"
             android:layout_alignParentLeft="true"
             android:scaleType="centerInside"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/ic_head_default_left"
             />
 
 
