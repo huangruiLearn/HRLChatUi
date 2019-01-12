@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.hrl.chaui.R;
 import com.hrl.chaui.util.LogUtil;
-import com.hrl.chaui.util.PermissionUtil;
 import com.hrl.chaui.widget.SetPermissionDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -27,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
                 requestPermisson();
             }
         }, 100);
-
+        LogUtil.d(new String(Character.toChars(0x1F60E)));
     }
 
 
@@ -44,11 +43,9 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean) {
-                            LogUtil.d("splash----所有权限都被同意");
                             startActivity(new Intent(SplashActivity.this,ChatActivity.class));
                             finish();
                          } else {
-                            LogUtil.d("splash----至少一个权限被拒绝");
 
                             SetPermissionDialog mSetPermissionDialog = new SetPermissionDialog(SplashActivity.this);
                             mSetPermissionDialog.show();
@@ -62,8 +59,7 @@ public class SplashActivity extends AppCompatActivity {
                                 @Override
                                 public void onRightClick() {
 
-                                    PermissionUtil.startSetPermissionActivity(SplashActivity.this);
-                                    finish();
+                                     finish();
                                 }
                             });
                         }

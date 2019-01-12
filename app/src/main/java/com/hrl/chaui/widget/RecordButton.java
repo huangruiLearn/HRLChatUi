@@ -1,12 +1,9 @@
 package com.hrl.chaui.widget;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -23,18 +20,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hrl.chaui.MyApplication;
-import com.hrl.chaui.activity.ChatActivity;
-import com.hrl.chaui.activity.SplashActivity;
 import com.hrl.chaui.util.LogUtil;
 import com.hrl.chaui.R;
-import com.hrl.chaui.util.PermissionUtil;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.IOException;
-
-import io.reactivex.functions.Consumer;
 
 public class RecordButton extends android.support.v7.widget.AppCompatButton {
 
@@ -81,9 +71,7 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
     private MediaRecorder mRecorder;
     private ObtainDecibelThread mThread;
     private Handler volumeHandler;
-/*    public static String File_Voice = Environment.getExternalStorageDirectory()
-            .getPath() + "/acoe/demo/voice";// 录音全部放在这个目录下
-    private final String SAVE_PATH = File_Voice;*/
+
 
     private float y ;
 
@@ -123,44 +111,23 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-
-
-
-
-
         int action = event.getAction();
         y = event.getY();
-        LogUtil.d("y的值："+y);
         if(mStateTV!=null && mStateIV!=null &&y<0){
-
             mStateTV.setText("松开手指,取消发送");
             mStateIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_cancel));
-           // anim.stop();
         }else if(mStateTV != null){
             mStateTV.setText("手指上滑,取消发送");
-
-        //    anim = (AnimationDrawable) mStateIV.getBackground();
-         //   anim.start();
-          //  view.setBackgroundResource(R.drawable.anim_mic);
-         //   anim = (AnimationDrawable) view.getBackground();
-         //   anim.start();
         }
-
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 setText("松开发送");
                 initDialogAndStartRecord();
-                //anim = (AnimationDrawable) mStateIV.getBackground();
-               // anim.start();
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-
                 this.setText("按住录音");
-                startTimer.cancel(); // 主动松开时取消计时
-                recordTimer.cancel(); // 主动松开时取消计时
-                if(y>=0 && (System.currentTimeMillis() - startTime <= MAX_INTERVAL_TIME)){
+                 if(y>=0 && (System.currentTimeMillis() - startTime <= MAX_INTERVAL_TIME)){
                     LogUtil.d("结束录音:");
                     finishRecord();
 
@@ -168,10 +135,6 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
                     cancelRecord();
                 }
                 break;
-       /*     case MotionEvent.ACTION_CANCEL: // 异常
-                LogUtil.d("滑动取消");
-                cancelRecord();
-                break;*/
         }
 
         return true;
@@ -222,8 +185,7 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
             recordDialog.dismiss();*/
             return;
         }else{
-            LogUtil.d("取消录音111");
-            stopRecording();
+             stopRecording();
             recordDialog.dismiss();
         }
         LogUtil.d("录音完成的路径:"+mFile);
@@ -246,11 +208,9 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
      * 取消录音对话框和停止录音
      */
     public void cancelRecord() {
-        LogUtil.d("取消录音222");
-        stopRecording();
+         stopRecording();
         recordDialog.dismiss();
-        //MyToast.makeText(getContext(), "取消录音！", Toast.LENGTH_SHORT);
-        File file = new File(mFile);
+         File file = new File(mFile);
         file.delete();
     }
 
@@ -273,87 +233,21 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
         LogUtil.d("创建文件的路径:"+mFile);
         LogUtil.d("文件创建成功:"+file.exists());
         mRecorder.setOutputFile(mFile);
-
-        try {
+         try {
             mRecorder.prepare();
-
-        } catch (IOException e) {
-            LogUtil.d("prepare异常,重新开始录音:"+e.toString());
-            e.printStackTrace();
-        }
-
-        try {
             mRecorder.start();
         }catch (Exception e){
-            LogUtil.d("start异常,重新开始录音:"+e.toString());
-            e.printStackTrace();
+            LogUtil.d("preparestart异常,重新开始录音:"+e.toString());
+             e.printStackTrace();
             mRecorder.release();
             mRecorder = null ;
             startRecording();
         }
-
-
        /* mThread = new  ObtainDecibelThread();
         mThread.start();*/
-
     }
 
-    /**
-     * 录音开始计时器，允许的最大时长倒数10秒时进入倒计时
-     */
-    private CountDownTimer startTimer = new CountDownTimer(20000 - 500 - 10000, 1000) { // 50秒后开始倒计时
-        @Override
-        public void onFinish() {
-            recordTimer.start();
-        }
-        @Override
-        public void onTick(long millisUntilFinished) {
-        }};
 
-
-    /**
-     * 录音最后10秒倒计时器，倒计时结束发送录音
-     */
-    private CountDownTimer recordTimer = new CountDownTimer(10000, 1000){
-        @Override
-        public void onFinish() {
-           // finishRecord();
-        }
-        @Override
-        public void onTick(long millisUntilFinished) { // 显示倒计时动画
-            switch ((int)millisUntilFinished / 1000) {
-            /*   case 10:
-                    view.setBackgroundResource(R.drawable.mic_count_10);
-                    break;
-                case 9:
-                    view.setBackgroundResource(R.drawable.mic_count_9);
-                    break;
-                case 8:
-                    view.setBackgroundResource(R.drawable.mic_count_8);
-                    break;
-                case 7:
-                    view.setBackgroundResource(R.drawable.mic_count_7);
-                    break;
-                case 6:
-                    view.setBackgroundResource(R.drawable.mic_count_6);
-                    break;
-                case 5:
-                    view.setBackgroundResource(R.drawable.mic_count_5);
-                    break;
-                case 4:
-                    view.setBackgroundResource(R.drawable.mic_count_4);
-                    break;
-                case 3:
-                    view.setBackgroundResource(R.drawable.mic_count_3);
-                    break;
-                case 2:
-                    view.setBackgroundResource(R.drawable.mic_count_2);
-                    break;
-                case 1:
-                    view.setBackgroundResource(R.drawable.mic_count_1);
-                    break; */
-            }
-        }};
 
     private void stopRecording() {
 
@@ -376,11 +270,6 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
             }
         }
 
-
-        /*if(extAudioRecorder != null){
-            extAudioRecorder.stop();
-            extAudioRecorder.release();
-        }*/
     }
 
     private class ObtainDecibelThread extends Thread {
@@ -449,24 +338,5 @@ public class RecordButton extends android.support.v7.widget.AppCompatButton {
         public void onFinishedRecord(String audioPath, int time);
     }
 
-    class CountDown extends CountDownTimer {
 
-        /**
-         * @param millisInFuture
-         * @param countDownInterval
-         */
-        public CountDown(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-            // TODO Auto-generated constructor stub
-        }
-
-        @Override
-        public void onFinish() {
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-        }
-
-    }
 }

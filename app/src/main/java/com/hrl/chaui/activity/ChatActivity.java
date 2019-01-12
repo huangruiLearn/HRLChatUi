@@ -1,7 +1,5 @@
 package com.hrl.chaui.activity;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
@@ -23,12 +21,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hrl.chaui.adapter.ChatAdapter;
 import com.hrl.chaui.bean.MsgType;
-import com.hrl.chaui.util.AudioPlayManager;
-import com.hrl.chaui.util.IAudioPlayListener;
 import com.hrl.chaui.util.LogUtil;
 import com.hrl.chaui.bean.Message;
 import com.hrl.chaui.R;
@@ -45,22 +40,16 @@ import com.hrl.chaui.widget.MediaManager;
 import com.hrl.chaui.widget.RecordButton;
 import com.hrl.chaui.widget.StateButton;
 import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
-import com.tbruyelle.rxpermissions2.RxPermissions;
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.functions.Consumer;
 
 
 public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -105,10 +94,6 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
 
-    private ImageView animView;
-    private int res=0;
-    int animationRes = 0;
-    private boolean isPlaying=false;
     private    ImageView  ivAudio;
 
     protected void initContent() {
@@ -128,14 +113,11 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
                     MediaManager.reset();
                 }else{
                     ivAudio = view.findViewById(R.id.ivAudio);
-
-                 //   ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
-                    MediaManager.reset();
-                    // voicePlayPosition = ivAudio.getId();
-                    ivAudio.setBackgroundResource(R.drawable.audio_animation_right_list);
-                    AnimationDrawable  drawable = (AnimationDrawable) ivAudio.getBackground();
+                      MediaManager.reset();
+                      ivAudio.setBackgroundResource(R.drawable.audio_animation_right_list);
+                     AnimationDrawable  drawable = (AnimationDrawable) ivAudio.getBackground();
                     drawable.start();
-                    MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAdapter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
+                     MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAdapter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
                             LogUtil.d("开始播放结束");
@@ -143,95 +125,7 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
                             MediaManager.release();
                          }
                     });
-
-
-                    // voicePlayPosition = ivAudio.getId();
-
                 }
-
-
-             /*   if (isPlaying) {
-                    isPlaying=true;
-                    LogUtil.d("开始播放");
-
-                    ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
-                    MediaManager.pause();
-
-                   // voicePlayPosition = ivAudio.getId();
-                    ivAudio.setBackgroundResource(R.drawable.audio_animation_right_list);
-                    AnimationDrawable  drawable = (AnimationDrawable) ivAudio.getBackground();
-                    drawable.start();
-                    MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAda    pter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            LogUtil.d("开始播放结束");
-                            ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
-                            MediaManager.pause();
-                       //     voicePlayPosition = -1;
-                            isPlaying=false;
-                        }
-                    });
-
-                }else{
-                    LogUtil.d("开始停止播放");
-                    final ImageView ivAudio = view.findViewById(R.id.ivAudio);
-                    ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
-                    MediaManager.pause();
-                //    voicePlayPosition = -1;
-                }*/
-
-
-            /*    if (animView != null) {
-                    animView.setImageResource(res);
-                    animView = null;
-                }
-                *//*switch (messageInfos.get(position).getType()) {
-                    case 1:
-                        animationRes = R.drawable.voice_left;
-                        res = R.mipmap.icon_voice_left3;
-                        break;
-                    case 2:
-                        animationRes = R.drawable.voice_right;
-                        res = R.mipmap.icon_voice_right3;
-                        break;
-                }*//*
-                animationRes = R.drawable.audio_animation_right_list;
-                res = R.mipmap.audio_animation_list_right_3;
-                ImageView imageView=view.findViewById(R.id.ivAudio);
-                imageView.setBackgroundResource(animationRes);
-
-                animView = imageView;
-
-
-
-
-
-
-                AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getBackground();
-                animationDrawable.start();
-                MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAdapter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        LogUtil.d("开始播放结束");
-                        animView.setImageResource(res);
-
-                    }
-                });*/
-
-
-                /*MediaManager.playSound(messageInfos.get(position).getFilepath(), new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        animView.setImageResource(res);
-                    }
-                });*/
-
-
-
-
-
-
-
             }
         });
 
@@ -247,17 +141,21 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
+          //下拉刷新模拟获取历史消息
           List<Message>  mReceiveMsgList=new ArrayList<Message>();
+          //构建文本消息
           Message mMessgaeText=getBaseReceiveMessage(MsgType.TEXT);
           TextMsgBody mTextMsgBody=new TextMsgBody();
           mTextMsgBody.setMessage("收到的消息");
           mMessgaeText.setBody(mTextMsgBody);
           mReceiveMsgList.add(mMessgaeText);
+          //构建图片消息
           Message mMessgaeImage=getBaseReceiveMessage(MsgType.IMAGE);
           ImageMsgBody mImageMsgBody=new ImageMsgBody();
           mImageMsgBody.setThumbUrl("http://pic19.nipic.com/20120323/9248108_173720311160_2.jpg");
           mMessgaeImage.setBody(mImageMsgBody);
           mReceiveMsgList.add(mMessgaeImage);
+          //构建文件消息
           Message mMessgaeFile=getBaseReceiveMessage(MsgType.FILE);
           FileMsgBody mFileMsgBody=new FileMsgBody();
           mFileMsgBody.setDisplayName("收到的文件");
@@ -316,10 +214,9 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         ((RecordButton) mBtnAudio).setOnFinishedRecordListener(new RecordButton.OnFinishedRecordListener() {
             @Override
             public void onFinishedRecord(String audioPath, int time) {
-                LogUtil.d("录音回调成功111");
+                LogUtil.d("录音结束回调");
                  File file = new File(audioPath);
                  if (file.exists()) {
-                     LogUtil.d("录音回调成功222");
                     sendAudioMessage(audioPath,time);
                 }
             }
@@ -340,11 +237,10 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
             case R.id.rlVideo:
                 PictureFileUtil.openGalleryAudio(ChatActivity.this,REQUEST_CODE_VEDIO);
                 break;
-            case R.id.rlLocation:
-
-                break;
             case R.id.rlFile:
                 PictureFileUtil.openFile(ChatActivity.this,REQUEST_CODE_FILE);
+                break;
+            case R.id.rlLocation:
                 break;
         }
     }

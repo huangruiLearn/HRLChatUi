@@ -47,9 +47,7 @@ public class ChatAdapter extends BaseQuickAdapter<Message,BaseViewHolder> {
     private static final int RECEIVE_FILE = R.layout.item_file_receive;
    private static final int RECEIVE_AUDIO = R.layout.item_audio_receive;
     private static final int SEND_AUDIO = R.layout.item_audio_send;
-    /*  private static final int SEND_VIDEO = R.layout.item_video_send;
-    private static final int RECEIVE_VIDEO = R.layout.item_video_receive;
-
+    /*
     private static final int SEND_LOCATION = R.layout.item_location_send;
     private static final int RECEIVE_LOCATION = R.layout.item_location_receive;*/
 
@@ -62,11 +60,8 @@ public class ChatAdapter extends BaseQuickAdapter<Message,BaseViewHolder> {
         setMultiTypeDelegate(new MultiTypeDelegate<Message>() {
             @Override
             protected int getItemType(Message entity) {
-                //根据你的实体类来判断布局类型
-          boolean isSend = entity.getSenderId().equals(ChatActivity.mSenderId);
-
-
-                 if (MsgType.TEXT==entity.getMsgType()) {
+              boolean isSend = entity.getSenderId().equals(ChatActivity.mSenderId);
+               if (MsgType.TEXT==entity.getMsgType()) {
                     return isSend ? TYPE_SEND_TEXT : TYPE_RECEIVE_TEXT;
                 }else if(MsgType.IMAGE==entity.getMsgType()){
                      return isSend ? TYPE_SEND_IMAGE : TYPE_RECEIVE_IMAGE;
@@ -80,7 +75,6 @@ public class ChatAdapter extends BaseQuickAdapter<Message,BaseViewHolder> {
                 return 0;
             }
         });
-        //Step.2
         getMultiTypeDelegate() .registerItemType(TYPE_SEND_TEXT, SEND_TEXT)
                 .registerItemType(TYPE_RECEIVE_TEXT,RECEIVE_TEXT)
                 .registerItemType(TYPE_SEND_IMAGE, SEND_IMAGE)
@@ -91,39 +85,13 @@ public class ChatAdapter extends BaseQuickAdapter<Message,BaseViewHolder> {
                 .registerItemType(TYPE_RECEIVE_FILE, RECEIVE_FILE)
                 .registerItemType(TYPE_SEND_AUDIO, SEND_AUDIO)
                 .registerItemType(TYPE_RECEIVE_AUDIO, RECEIVE_AUDIO);
-
-
-        //  .registerItemType(0, R.layout.message_item_chat_accept);
-
     }
 
     @Override
     protected void convert(BaseViewHolder helper, Message item) {
-
-
         setContent(helper, item);
         setStatus(helper, item);
-        MsgBody msgContent = item.getBody();
-        if (msgContent instanceof AudioMsgBody){
-            helper.addOnClickListener(R.id.rlAudio);
-        //    helper.getView(R.id.ivAudio).setId(helper.getAdapterPosition());
-           /* if (helper.getAdapterPosition() == -1) {
-                helper.getView(R.id.ivAudio)
-                        .setBackgroundResource(R.mipmap.audio_animation_list_right_3);
-                helper.getView(R.id.ivAudio)
-                        .setBackgroundResource(R.drawable.audio_animation_right_list);
-                AnimationDrawable  drawable = (AnimationDrawable)helper.getView(R.id.ivAudio)
-                        .getBackground();
-                drawable.start();
-            } else {
-                helper.getView(R.id.ivAudio)
-                        .setBackgroundResource(R.mipmap.audio_animation_list_right_3);
-            }*/
-
-
-        }
-
-
+        setOnClick(helper, item);
 
     }
 
@@ -145,76 +113,65 @@ public class ChatAdapter extends BaseQuickAdapter<Message,BaseViewHolder> {
                 }
             }
         } else if (msgContent instanceof ImageMsgBody) {
-            ImageMsgBody imageMessage = (ImageMsgBody) msgContent;
-            BubbleImageView bivPic = helper.getView(R.id.bivPic);
             boolean isSend = item.getSenderId().equals(ChatActivity.mSenderId);
             if (isSend) {
                 MsgSendStatus sentStatus = item.getSentStatus();
                 if (sentStatus == MsgSendStatus.SENDING) {
-                   /* bivPic.setProgressVisible(true);
-                    if (!TextUtils.isEmpty(item.getExtra()))
-                        bivPic.setPercent(Integer.valueOf(item.getExtra()));
-                    bivPic.showShadow(true);*/
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, false);
                 } else if (sentStatus == MsgSendStatus.FAILED) {
-                 /*   bivPic.setProgressVisible(false);
-                    bivPic.showShadow(false);*/
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, true);
-
                 } else if (sentStatus == MsgSendStatus.SENT) {
-                    /*bivPic.setProgressVisible(false);
-                    bivPic.showShadow(false);*/
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, false);
                 }
             } else {
-                /* bivPic.setProgressVisible(false);
-                 bivPic.showShadow(false);*/
-               //  helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, false);
+
             }
         }
 
 
     }
-
 
         private void setContent(BaseViewHolder helper, Message item) {
-        if (item.getMsgType().equals(MsgType.TEXT)){
-           TextMsgBody msgBody = (TextMsgBody) item.getBody();
-           helper.setText(R.id.chat_item_content_text, msgBody.getMessage() );
-          // helper.setText(R.id.item_tv_time, DateUtil.getTimeByCurrentMills(item.getSentTime()+"") );
-        }else if(item.getMsgType().equals(MsgType.IMAGE)){
-               ImageMsgBody msgBody = (ImageMsgBody) item.getBody();
-               if (TextUtils.isEmpty(msgBody.getThumbPath() )){
-                   GlideUtils.loadChatImage(mContext,msgBody.getThumbUrl(),(ImageView) helper.getView(R.id.bivPic));
-                }else{
-                    File file = new File(msgBody.getThumbPath());
+                if (item.getMsgType().equals(MsgType.TEXT)){
+                   TextMsgBody msgBody = (TextMsgBody) item.getBody();
+                   helper.setText(R.id.chat_item_content_text, msgBody.getMessage() );
+                }else if(item.getMsgType().equals(MsgType.IMAGE)){
+                       ImageMsgBody msgBody = (ImageMsgBody) item.getBody();
+                       if (TextUtils.isEmpty(msgBody.getThumbPath() )){
+                           GlideUtils.loadChatImage(mContext,msgBody.getThumbUrl(),(ImageView) helper.getView(R.id.bivPic));
+                        }else{
+                            File file = new File(msgBody.getThumbPath());
+                            if (file.exists()) {
+                                GlideUtils.loadChatImage(mContext,msgBody.getThumbPath(),(ImageView) helper.getView(R.id.bivPic));
+                            }else {
+                                GlideUtils.loadChatImage(mContext,msgBody.getThumbUrl(),(ImageView) helper.getView(R.id.bivPic));
+                            }
+                        }
+                }else if(item.getMsgType().equals(MsgType.VIDEO)){
+                    VideoMsgBody msgBody = (VideoMsgBody) item.getBody();
+                    File file = new File(msgBody.getExtra());
                     if (file.exists()) {
-                        GlideUtils.loadChatImage(mContext,msgBody.getThumbPath(),(ImageView) helper.getView(R.id.bivPic));
+                        GlideUtils.loadChatImage(mContext,msgBody.getExtra(),(ImageView) helper.getView(R.id.bivPic));
                     }else {
-                        GlideUtils.loadChatImage(mContext,msgBody.getThumbUrl(),(ImageView) helper.getView(R.id.bivPic));
+                        GlideUtils.loadChatImage(mContext,msgBody.getExtra(),(ImageView) helper.getView(R.id.bivPic));
                     }
+                }else if(item.getMsgType().equals(MsgType.FILE)){
+                    FileMsgBody msgBody = (FileMsgBody) item.getBody();
+                    helper.setText(R.id.msg_tv_file_name, msgBody.getDisplayName() );
+                    helper.setText(R.id.msg_tv_file_size, msgBody.getSize()+"B" );
+                }else if(item.getMsgType().equals(MsgType.AUDIO)){
+                    AudioMsgBody msgBody = (AudioMsgBody) item.getBody();
+                    helper.setText(R.id.tvDuration, msgBody.getDuration()+"\"" );
                 }
-        }else if(item.getMsgType().equals(MsgType.VIDEO)){
-            VideoMsgBody msgBody = (VideoMsgBody) item.getBody();
-            File file = new File(msgBody.getExtra());
-            if (file.exists()) {
-                GlideUtils.loadChatImage(mContext,msgBody.getExtra(),(ImageView) helper.getView(R.id.bivPic));
-            }else {
-                GlideUtils.loadChatImage(mContext,msgBody.getExtra(),(ImageView) helper.getView(R.id.bivPic));
-            }
-           /* VideoMsgBody msgBody = (VideoMsgBody) item.getBody();
-            if (fileMessage.getLocalPath() != null && new File(fileMessage.getLocalPath().getPath()).exists()) {
-                VideoThumbLoader.getInstance().showThumb(fileMessage.getLocalPath().getPath(), bivPic, 200, 200);
-            } else {
-                bivPic.setImageResource(R.mipmap.img_video_default);
-            }*/
-        }else if(item.getMsgType().equals(MsgType.FILE)){
-            FileMsgBody msgBody = (FileMsgBody) item.getBody();
-            helper.setText(R.id.msg_tv_file_name, msgBody.getDisplayName() );
-            helper.setText(R.id.msg_tv_file_size, msgBody.getSize()+"B" );
-        }else if(item.getMsgType().equals(MsgType.AUDIO)){
-            AudioMsgBody msgBody = (AudioMsgBody) item.getBody();
-            helper.setText(R.id.tvDuration, msgBody.getDuration()+"\"" );
+    }
+
+
+
+    private void setOnClick(BaseViewHolder helper, Message item) {
+        MsgBody msgContent = item.getBody();
+        if (msgContent instanceof AudioMsgBody){
+            helper.addOnClickListener(R.id.rlAudio);
         }
     }
+
 }

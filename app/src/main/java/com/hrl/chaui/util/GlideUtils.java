@@ -44,15 +44,6 @@ public class GlideUtils {
 								.into(imageView);
 					}
 				});
-
-
-
-
-		/*RequestOptions options = new RequestOptions().placeholder(R.mipmap.default_img_failed)// 正在加载中的图片
-				.error(R.mipmap.default_img_failed); // 加载失败的图片
-		Glide.with(mContext).load(imgUrl) // 图片地址
-				.apply(options) // 参数
-				.into(imageView); // 需要显示的ImageView控件*/
-	}
+ 	}
 
 }
