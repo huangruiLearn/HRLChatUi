@@ -102,26 +102,40 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         LinearLayoutManager mLinearLayout=new LinearLayoutManager(this);
         mRvChat.setLayoutManager(mLinearLayout);
         mRvChat.setAdapter(mAdapter);
-         mSwipeRefresh.setOnRefreshListener(this);
+        mSwipeRefresh.setOnRefreshListener(this);
         initChatUi();
         mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                if (ivAudio != null) {
-                    ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
-                    ivAudio = null;
+
+                final  boolean isSend = mAdapter.getItem(position).getSenderId().equals(ChatActivity.mSenderId);
+                 if (ivAudio != null) {
+                    if (isSend){
+                        ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                    }else {
+                        ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_left_3);
+                    }
+                     ivAudio = null;
                     MediaManager.reset();
                 }else{
                     ivAudio = view.findViewById(R.id.ivAudio);
                       MediaManager.reset();
-                      ivAudio.setBackgroundResource(R.drawable.audio_animation_right_list);
-                     AnimationDrawable  drawable = (AnimationDrawable) ivAudio.getBackground();
+                    if (isSend){
+                        ivAudio.setBackgroundResource(R.drawable.audio_animation_right_list);
+                    }else {
+                        ivAudio.setBackgroundResource(R.drawable.audio_animation_left_list);
+                    }
+                      AnimationDrawable  drawable = (AnimationDrawable) ivAudio.getBackground();
                     drawable.start();
                      MediaManager.playSound(ChatActivity.this,((AudioMsgBody)mAdapter.getData().get(position).getBody()).getLocalPath(), new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
-                            LogUtil.d("开始播放结束");
-                            ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                             if (isSend){
+                                ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_right_3);
+                            }else {
+                                ivAudio.setBackgroundResource(R.mipmap.audio_animation_list_left_3);
+                            }
+
                             MediaManager.release();
                          }
                     });

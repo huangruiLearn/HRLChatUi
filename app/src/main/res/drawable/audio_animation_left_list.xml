@@ -9,7 +9,7 @@
         android:drawable="@mipmap/audio_animation_list_left_1"
         android:duration="300"></item>
     <item
-        android:drawable="@mipmap/audio_animation_list_right_2"
+        android:drawable="@mipmap/audio_animation_list_left_2"
         android:duration="300"></item>
 
 
