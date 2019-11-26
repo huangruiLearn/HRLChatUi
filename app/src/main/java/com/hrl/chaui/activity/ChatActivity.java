@@ -166,7 +166,7 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
           //构建图片消息
           Message mMessgaeImage=getBaseReceiveMessage(MsgType.IMAGE);
           ImageMsgBody mImageMsgBody=new ImageMsgBody();
-          mImageMsgBody.setThumbUrl("http://pic19.nipic.com/20120323/9248108_173720311160_2.jpg");
+          mImageMsgBody.setThumbUrl("https://c-ssl.duitang.com/uploads/item/201208/30/20120830173930_PBfJE.thumb.700_0.jpeg");
           mMessgaeImage.setBody(mImageMsgBody);
           mReceiveMsgList.add(mMessgaeImage);
           //构建文件消息
