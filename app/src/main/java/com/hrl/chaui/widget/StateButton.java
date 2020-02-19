@@ -6,10 +6,10 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntRange;
-import android.support.v7.widget.AppCompatButton;
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
+import androidx.appcompat.widget.AppCompatButton;
 import android.util.AttributeSet;
 
 import com.hrl.chaui.R;
@@ -58,7 +58,7 @@ public class StateButton extends AppCompatButton {
     }
 
     public StateButton(Context context, AttributeSet attrs) {
-        this(context, attrs, android.support.v7.appcompat.R.attr.buttonStyle);
+        this(context, attrs, androidx.appcompat.R.attr.buttonStyle);
     }
 
     public StateButton(Context context, AttributeSet attrs, int defStyleAttr) {

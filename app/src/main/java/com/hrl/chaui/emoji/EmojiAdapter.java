@@ -1,6 +1,6 @@
 package com.hrl.chaui.emoji;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
  import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hrl.chaui.R;

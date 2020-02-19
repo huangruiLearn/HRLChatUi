@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -24,9 +23,8 @@ import com.hrl.chaui.util.LogUtil;
 import com.hrl.chaui.R;
 
 import java.io.File;
-import java.io.IOException;
 
-public class RecordButton extends android.support.v7.widget.AppCompatButton {
+public class RecordButton extends androidx.appcompat.widget.AppCompatButton {
 
 
 
